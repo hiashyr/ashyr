@@ -48,6 +48,67 @@ body {
 .navbar-brand {
     font-weight: 700 !important;
     font-size: 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.logo-image {
+    width: 40px !important;
+    height: 40px !important;
+    background: linear-gradient(135deg, var(--primary-blue), var(--form-btn-hover)) !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.logo-image::after {
+    content: 'LOGO' !important;
+}
+
+/* Стили для случая, когда изображение загружено */
+.logo-image[src]:not([src="#"]) {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Адаптивность для логотипа */
+@media (max-width: 768px) {
+    .navbar-brand {
+        gap: 10px !important;
+        font-size: 1.3rem !important;
+    }
+    
+    .logo-image {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        gap: 8px !important;
+        font-size: 1.2rem !important;
+    }
+    
+    .logo-image {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.6rem !important;
+    }
 }
 
 .nav-link {
@@ -424,58 +485,61 @@ body {
 }
 
 /* ===== СЛАЙДЕР ===== */
-.slider-container {
-    max-width: 900px !important;
-    margin: 2rem auto !important;
-}
-
-.slider-image {
-    height: 400px !important;
-    object-fit: cover !important;
-    width: 100% !important;
-    border-radius: 10px !important;
-}
-
 .carousel {
-    border-radius: 10px !important;
+    border-radius: 16px !important;
     overflow: hidden !important;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    position: relative !important;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .carousel-item {
-    border-radius: 10px !important;
-    overflow: hidden !important;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    height: 500px !important;
+    position: relative !important;
+}
+
+.carousel-item img {
+    height: 100% !important;
+    object-fit: cover !important;
+    width: 100% !important;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.carousel-item:hover img {
+    transform: scale(1.05) !important;
 }
 
 /* КНОПКИ ПЕРЕКЛЮЧЕНИЯ СЛАЙДОВ */
 .carousel-control-prev,
 .carousel-control-next {
-    width: 40px !important;
-    height: 40px !important;
-    background: rgba(44, 90, 160, 0.9) !important;
+    width: 50px !important;
+    height: 50px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
     border-radius: 50% !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    margin: 0 25px !important;
+    margin: 0 20px !important;
     opacity: 1 !important;
     transition: all 0.3s ease !important;
-    border: 3px solid white !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    backdrop-filter: blur(10px) !important;
 }
 
 .carousel-control-prev:hover,
 .carousel-control-next:hover {
-    background: var(--primary-blue) !important;
+    background: white !important;
     transform: translateY(-50%) scale(1.1) !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
 }
 
 .carousel-control-prev {
-    left: 10px !important;
+    left: 20px !important;
 }
 
 .carousel-control-next {
-    right: 10px !important;
+    right: 20px !important;
 }
 
 .carousel-control-prev-icon,
@@ -483,51 +547,69 @@ body {
     width: 25px !important;
     height: 25px !important;
     background-size: 25px 25px !important;
-    filter: brightness(0) invert(1) !important;
+    filter: brightness(0) !important;
 }
 
 /* Индикаторы */
 .carousel-indicators {
-    bottom: 20px !important;
+    bottom: 30px !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
 }
 
 .carousel-indicators button {
-    width: 15px !important;
-    height: 15px !important;
+    width: 12px !important;
+    height: 12px !important;
     border-radius: 50% !important;
-    margin: 0 8px !important;
     background-color: rgba(255,255,255,0.5) !important;
-    border: 2px solid transparent !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .carousel-indicators button.active {
     background-color: white !important;
-    border-color: var(--primary-blue) !important;
+    transform: scale(1.2) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
 }
 
 /* Текст на слайдах */
 .carousel-caption {
-    background: rgba(0,0,0,0.7) !important;
-    border-radius: 10px !important;
-    padding: 20px !important;
-    bottom: 50px !important;
+    position: absolute !important;
+    bottom: 40px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 85% !important;
-    backdrop-filter: blur(5px) !important;
+    text-align: center !important;
+    background: rgba(0,0,0,0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 25px !important;
+    border-radius: 12px !important;
+    max-width: 600px !important;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    opacity: 0 !important;
+    transform: translateX(-50%) translateY(20px) !important;
+}
+
+.carousel-item.active .carousel-caption {
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(0) !important;
 }
 
 .carousel-caption h5 {
     color: white !important;
     font-weight: 700 !important;
     margin-bottom: 10px !important;
-    font-size: 1.4rem !important;
+    font-size: 1.5rem !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
 }
 
 .carousel-caption p {
     color: #f8f9fa !important;
     margin-bottom: 0 !important;
     font-size: 1.1rem !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
 }
 
 /* ===== АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ ===== */
@@ -553,27 +635,28 @@ body {
 
 /* Адаптивность слайдера для мобильных */
 @media (max-width: 768px) {
-    .slider-image {
-        height: 300px !important;
+    .carousel-item {
+        height: 350px !important;
     }
     
     .carousel-control-prev,
     .carousel-control-next {
-        width: 50px !important;
-        height: 50px !important;
+        width: 40px !important;
+        height: 40px !important;
         margin: 0 15px !important;
     }
     
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        width: 20px !important;
-        height: 20px !important;
-        background-size: 20px 20px !important;
+        width: 16px !important;
+        height: 16px !important;
+        background-size: 16px 16px !important;
     }
     
     .carousel-caption {
-        bottom: 30px !important;
-        padding: 15px !important;
+        bottom: 20px !important;
+        padding: 20px !important;
+        max-width: 90% !important;
     }
     
     .carousel-caption h5 {
@@ -585,32 +668,32 @@ body {
     }
 }
 
-@media (max-width: 390px) {
-    .slider-image {
-        height: 250px !important;
+@media (max-width: 480px) {
+    .carousel-item {
+        height: 300px !important;
     }
     
     .carousel-control-prev,
     .carousel-control-next {
-        width: 45px !important;
-        height: 45px !important;
+        width: 35px !important;
+        height: 35px !important;
         margin: 0 10px !important;
     }
     
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        width: 18px !important;
-        height: 18px !important;
-        background-size: 18px 18px !important;
+        width: 14px !important;
+        height: 14px !important;
+        background-size: 14px 14px !important;
     }
     
     .carousel-caption {
-        bottom: 20px !important;
-        padding: 10px !important;
+        bottom: 15px !important;
+        padding: 15px !important;
     }
     
     .carousel-caption h5 {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
     }
     
     .carousel-caption p {
@@ -618,8 +701,8 @@ body {
     }
     
     .carousel-indicators button {
-        width: 12px !important;
-        height: 12px !important;
-        margin: 0 5px !important;
+        width: 10px !important;
+        height: 10px !important;
+        margin: 0 4px !important;
     }
 }
