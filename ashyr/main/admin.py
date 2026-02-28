@@ -8,7 +8,7 @@ from admin_interface.models import Theme
 from .models import CustomUser, Application, Review
 
 # Удаление модели Theme из админки (admin-interface)
-admin.site.unregister(Theme)
+# admin.site.unregister(Theme)
 # Удаление модели Group из админки
 admin.site.unregister(Group)
 

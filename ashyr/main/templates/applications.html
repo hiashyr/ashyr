@@ -9,76 +9,101 @@
 {% block keywords %}заявки, обучение, отзывы, статусы{% endblock %}
 
 {% block content %}
-{# Заголовок страницы с кнопкой создания новой заявки #}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Мои заявки</h2>
-    {# Ссылка на страницу создания новой заявки #}
-    <a href="{% url 'create_application' %}" class="btn btn-primary">➕ Новая заявка</a>
-</div>
+{# Контейнер для страницы заявок #}
+<div class="container">
+    {# Заголовок страницы с кнопкой создания новой заявки #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="auth-form-title">Мои заявки</h2>
+        {# Ссылка на страницу создания новой заявки #}
+        <a href="{% url 'create_application' %}" class="btn btn-primary">➕ Новая заявка</a>
+    </div>
 
-{# Проверка наличия заявок у пользователя #}
-{% if applications %}
-    <div class="row">
-        {# Цикл по всем заявкам пользователя #}
-        {% for application in applications %}
-        <div class="col-md-6 mb-4">
-            {# Карточка заявки с динамическими классами в зависимости от статуса:- application-new: для новых заявок  - application-in-progress: для заявок в процессе обучения - application-completed: для завершенных заявок  #}
-            <div class="card application-card 
-                {% if application.status == 'new' %}application-new
-                {% elif application.status == 'in_progress' %}application-in-progress
-                {% elif application.status == 'completed' %}application-completed{% endif %}">
-                <div class="card-body">
-                    {# Заголовок карточки с названием курса и статусом #}
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        {# Отображение человеко-читаемого названия курса #}
-                        <h5 class="card-title">{{ application.get_course_display }}</h5>
-                        {#   Бейдж статуса заявки с цветом в зависимости от статуса:  - bg-success: для новых заявок (зеленый) - bg-warning: для заявок в процессе (желтый) - bg-secondary: для завершенных (серый)#}
-                        <span class="badge 
-                            {% if application.status == 'new' %}bg-success
-                            {% elif application.status == 'in_progress' %}bg-warning
-                            {% else %}bg-secondary{% endif %}">
-                            {{ application.get_status_display }}
-                        </span>
-                    </div>
-                    
-                    {# Детальная информация о заявке #}
-                    <p class="card-text">
-                        <strong>Дата начала:</strong> {{ application.desired_start_date|date:"d.m.Y" }}<br>
-                        <strong>Способ оплаты:</strong> {{ application.get_payment_method_display }}<br>
-                        <strong>Подана:</strong> {{ application.created_at|date:"d.m.Y H:i" }}
-                    </p>
-                    
-                    {# Блок для отзывов (только для завершенных заявок) #}
-                    {% if application.status == 'completed' %}
-                        <div class="mt-3">
-                            {# Проверка наличия отзыва у заявки #}
-                            {% if application.review %}
-                                {# Отображение существующего отзыва #}
-                                <div class="alert alert-info">
-                                    <strong>Ваш отзыв:</strong><br>
-                                    Оценка: {{ application.review.rating }}/5<br>
-                                    {{ application.review.text }}
-                                </div>
-                            {% else %}
-                                {# Ссылка для создания нового отзыва #}
-                                <a href="{% url 'add_review' application.id %}" class="btn btn-outline-primary btn-sm">
-                                    📝 Оставить отзыв
-                                </a>
-                            {% endif %}
+    {# Проверка наличия заявок у пользователя #}
+    {% if applications %}
+        <div class="row">
+            {# Цикл по всем заявкам пользователя #}
+            {% for application in applications %}
+            <div class="col-md-6 mb-4">
+                {# Карточка заявки с динамическими классами в зависимости от статуса:- application-new: для новых заявок  - application-in-progress: для заявок в процессе обучения - application-completed: для завершенных заявок  #}
+                <div class="card application-card 
+                    {% if application.status == 'new' %}application-new
+                    {% elif application.status == 'in_progress' %}application-in-progress
+                    {% elif application.status == 'completed' %}application-completed{% endif %}"
+                    style="
+                        background: linear-gradient(135deg, 
+                            {% if application.status == 'new' %}rgba(40, 167, 69, 0.05){% elif application.status == 'in_progress' %}rgba(255, 193, 7, 0.05){% else %}rgba(108, 117, 125, 0.05){% endif %} 0%, 
+                            rgba(255, 255, 255, 0.8) 100%);
+                        border: 1px solid 
+                            {% if application.status == 'new' %}rgba(40, 167, 69, 0.3){% elif application.status == 'in_progress' %}rgba(255, 193, 7, 0.3){% else %}rgba(108, 117, 125, 0.3){% endif %};
+                        box-shadow: 0 4px 15px 
+                            {% if application.status == 'new' %}rgba(40, 167, 69, 0.15){% elif application.status == 'in_progress' %}rgba(255, 193, 7, 0.15){% else %}rgba(108, 117, 125, 0.15){% endif %};
+                    ">
+                    <div class="card-body">
+                        {# Заголовок карточки с названием курса и статусом #}
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            {# Отображение человеко-читаемого названия курса #}
+                            <h5 class="card-title">{{ application.get_course_display }}</h5>
+                            {#   Бейдж статуса заявки с цветом в зависимости от статуса:  - bg-success: для новых заявок (зеленый) - bg-warning: для заявок в процессе (желтый) - bg-secondary: для завершенных (серый)#}
+                            <span class="badge 
+                                {% if application.status == 'new' %}bg-success
+                                {% elif application.status == 'in_progress' %}bg-warning
+                                {% else %}bg-secondary{% endif %}">
+                                {{ application.get_status_display }}
+                            </span>
                         </div>
-                    {% endif %}
+                        
+                        {# Детальная информация о заявке #}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <strong class="text-primary">Дата начала:</strong><br>
+                                    <span class="text-muted">{{ application.desired_start_date|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="mb-2">
+                                    <strong class="text-primary">Способ оплаты:</strong><br>
+                                    <span class="text-muted">{{ application.get_payment_method_display }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <strong class="text-primary">Подана:</strong><br>
+                                    <span class="text-muted">{{ application.created_at|date:"d.m.Y H:i" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {# Блок для отзывов (только для завершенных заявок) #}
+                        {% if application.status == 'completed' %}
+                            <div class="mt-3 pt-3 border-top">
+                                {# Проверка наличия отзыва у заявки #}
+                                {% if application.review %}
+                                    {# Отображение существующего отзыва #}
+                                    <div class="alert alert-info">
+                                        <strong>Ваш отзыв:</strong><br>
+                                        <span class="badge bg-warning text-dark">Оценка: {{ application.review.rating }}/5</span><br>
+                                        <p class="mt-2 mb-0">{{ application.review.text }}</p>
+                                    </div>
+                                {% else %}
+                                    {# Ссылка для создания нового отзыва #}
+                                    <a href="{% url 'add_review' application.id %}" class="btn btn-outline-primary w-100">
+                                        Оставить отзыв
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-{% else %}
-    {# Сообщение при отсутствии заявок #}
-    <div class="text-center py-5">
-        <h4>У вас пока нет заявок</h4>
-        <p class="text-muted">Подайте первую заявку на обучение!</p>
-        {# Кнопка для создания первой заявки #}
-        <a href="{% url 'create_application' %}" class="btn btn-primary">Подать заявку</a>
-    </div>
-{% endif %}
+    {% else %}
+        {# Сообщение при отсутствии заявок #}
+        <div class="text-center py-5">
+            <h4 class="auth-form-title">У вас пока нет заявок</h4>
+            <p class="text-muted">Подайте первую заявку на обучение!</p>
+            {# Кнопка для создания первой заявки #}
+            <a href="{% url 'create_application' %}" class="btn btn-primary">Подать заявку</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
