@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 import re
 
 # Кастомная модель пользователя
@@ -18,11 +19,13 @@ class CustomUser(AbstractUser):
         message='ФИО должно содержать только кириллические символы и пробелы'
     )
     
-    # Валидатор для телефона - поддержка обоих форматов
-    phone_validator = RegexValidator(
-        regex=r'^(8\(\d{3}\)\d{3}-\d{2}-\d{2}|\+7 \(\d{3}\) \d{3}-\d{2}-\d{2})$',
-        message='Телефон должен быть в формате: 8(XXX)XXX-XX-XX или +7 (XXX) XXX-XX-XX'
-    )
+    # Гибкий валидатор для телефона: проверяет наличие 11 цифр и ведущей 7/8
+    def phone_flex_validator(value):
+        digits = re.sub(r'\D', '', value or '')
+        if digits.startswith('8'):
+            digits = '7' + digits[1:]
+        if not (len(digits) == 11 and digits.startswith('7')):
+            raise ValidationError('Телефон должен содержать код страны и 11 цифр, например: +7 (XXX) XXX-XX-XX')
 
     # Поле логина с валидацией и уникальностью
     username = models.CharField(
@@ -39,10 +42,10 @@ class CustomUser(AbstractUser):
         validators=[fio_validator],
         verbose_name='ФИО'
     )
-    # Поле телефона с валидацией формата
+    # Поле телефона с гибкой валидацией; значение будет нормализовано при сохранении
     phone = models.CharField(
-        max_length=15,
-        validators=[phone_validator],
+        max_length=32,
+        validators=[phone_flex_validator],
         verbose_name='Телефон'
     )
     # Поле email с уникальностью
@@ -62,6 +65,17 @@ class CustomUser(AbstractUser):
     # Строковое представление пользователя
     def __str__(self):
         return f"{self.fio} ({self.username})"
+
+    # Нормализация телефона перед сохранением: сохраняем в формате +7 (XXX) XXX-XX-XX
+    def save(self, *args, **kwargs):
+        if self.phone:
+            digits = re.sub(r'\D', '', self.phone)
+            if digits.startswith('8'):
+                digits = '7' + digits[1:]
+            if len(digits) >= 11 and digits.startswith('7'):
+                national = digits[1:11]
+                self.phone = '+7 (' + national[0:3] + ') ' + national[3:6] + '-' + national[6:8] + '-' + national[8:10]
+        super().save(*args, **kwargs)
     
 # Модель заявки на обучение
 class Application(models.Model):

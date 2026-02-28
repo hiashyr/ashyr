@@ -84,9 +84,19 @@ class CustomUserRegistrationForm(forms.ModelForm):
             if not re.match(r'^8\(\d{3}\)\d{3}-\d{2}-\d{2}$', phone):
                 raise forms.ValidationError('Телефон должен быть в формате: 8(XXX)XXX-XX-XX')
         else:
-            # Разрешаем как стандартный формат +7 (XXX) XXX-XX-XX, так и с дополнительной цифрой +7 (XXX) XXX-XX-XX-X
-            if not re.match(r'^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}(-\d)?$|^+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$', phone):
-                raise forms.ValidationError('Телефон должен быть в формате: +7 (XXX) XXX-XX-XX или +7 (XXX) XXX-XX-XX-X')
+            # Более гибкая валидация для +7: принимаем любые разделители,
+            # извлекаем цифры и нормализуем к формату +7 (XXX) XXX-XX-XX
+            digits = re.sub(r'\D', '', phone)
+            # Если пользователь ввёл 8 в начале, считаем как 7
+            if digits.startswith('8'):
+                digits = '7' + digits[1:]
+            # Ожидаем 11 цифр с ведущей 7
+            if not (len(digits) == 11 and digits.startswith('7')):
+                raise forms.ValidationError('Телефон должен содержать код страны и 11 цифр, например: +7 (XXX) XXX-XX-XX')
+            # Форматируем номер для сохранения в модели
+            national = digits[1:]
+            formatted = '+7 (' + national[0:3] + ') ' + national[3:6] + '-' + national[6:8] + '-' + national[8:10]
+            phone = formatted
 
         # Проверка уникальности телефона
         if CustomUser.objects.filter(phone=phone).exists():
