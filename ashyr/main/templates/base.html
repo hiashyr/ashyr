@@ -56,6 +56,33 @@
         {% endblock %}
     </main>
 
+    {# Футер сайта #}
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="footer-logo">Корочки.есть</div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="footer-nav">
+                        <ul class="footer-links">
+                            <li><a href="{% url 'home' %}">Главная</a></li>
+                            <li><a href="{% url 'applications' %}">Мои заявки</a></li>
+                            <li><a href="{% url 'create_application' %}">Подать заявку</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="footer-bottom text-md-end">
+                        &copy; 2026 Корочки.есть. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     {# Подключение Bootstrap JavaScript (включает Popper.js) #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
