@@ -93,36 +93,50 @@ function applyPhoneMask(inputElement, format) {
             }
         });
 
-        // Во время ввода: форматируем номер по мере набора (+7 (XXX) XXX-XX-XX)
+        // Во время ввода: форматируем номер по мере набора для +7 и 8
         inputElement.addEventListener('input', function(e) {
-            if (format !== '+7') return;
             const el = e.target;
             // получаем только цифры
             let digits = el.value.replace(/\D/g, '');
-            // если ввели 8 в начале — считаем как 7
-            if (digits.startsWith('8')) digits = '7' + digits.substring(1);
-            // если ещё нет ведущей 7 — не форсируем, но при форматировании добавим её
-            if (!digits.startsWith('7')) digits = digits;
 
-            // национальная часть (без ведущей 7)
-            let national = digits.startsWith('7') ? digits.substring(1) : digits;
-            // ограничиваем для отображения 10 цифрами (но не удаляем лишние из данных)
-            const displayNational = national.substring(0, 10);
+            if (format === '+7') {
+                // если ввели 8 в начале — считаем как 7
+                if (digits.startsWith('8')) digits = '7' + digits.substring(1);
+                // национальная часть (без ведущей 7)
+                let national = digits.startsWith('7') ? digits.substring(1) : digits;
+                const displayNational = national.substring(0, 10);
 
-            // формируем строку постепенно
-            let formatted = '+7';
-            if (displayNational.length > 0) formatted += ' (' + displayNational.substring(0, Math.min(3, displayNational.length));
-            if (displayNational.length >= 3) formatted += ') ' + displayNational.substring(3, Math.min(6, displayNational.length));
-            if (displayNational.length >= 6) formatted += '-' + displayNational.substring(6, Math.min(8, displayNational.length));
-            if (displayNational.length >= 8) formatted += '-' + displayNational.substring(8, Math.min(10, displayNational.length));
+                let formatted = '+7';
+                if (displayNational.length > 0) formatted += ' (' + displayNational.substring(0, Math.min(3, displayNational.length));
+                if (displayNational.length >= 3) formatted += ') ' + displayNational.substring(3, Math.min(6, displayNational.length));
+                if (displayNational.length >= 6) formatted += '-' + displayNational.substring(6, Math.min(8, displayNational.length));
+                if (displayNational.length >= 8) formatted += '-' + displayNational.substring(8, Math.min(10, displayNational.length));
 
-            // Устанавливаем новое значение (без вмешательства в позицию курсора)
-            el.value = formatted;
+                el.value = formatted;
+                return;
+            }
+
+            if (format === '8') {
+                // Гарантируем, что начинается с 8
+                if (!digits.startsWith('8')) digits = '8' + digits;
+                // национальная часть после 8
+                const national = digits.substring(1);
+                const displayNational = national.substring(0, 10);
+
+                let formatted = '8';
+                if (displayNational.length > 0) formatted += '(' + displayNational.substring(0, Math.min(3, displayNational.length));
+                if (displayNational.length >= 3) formatted += ')' + displayNational.substring(3, Math.min(6, displayNational.length));
+                if (displayNational.length >= 6) formatted += '-' + displayNational.substring(6, Math.min(8, displayNational.length));
+                if (displayNational.length >= 8) formatted += '-' + displayNational.substring(8, Math.min(10, displayNational.length));
+
+                el.value = formatted;
+                return;
+            }
         });
 }
 
 // Применяем маску для телефона (по умолчанию формат '8')
 const phoneInput = document.getElementById('phone-input');
-applyPhoneMask(phoneInput, '8');
+applyPhoneMask(phoneInput, '+7');
 </script>
 {% endblock %}
