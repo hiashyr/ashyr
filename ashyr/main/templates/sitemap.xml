@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- Главная страница -->
+    <url>
+        <loc>http://127.0.0.1:8000/</loc>
+        <lastmod>{% now "Y-m-d" %}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- Регистрация -->
+    <url>
+        <loc>http://127.0.0.1:8000/register/</loc>
+        <lastmod>{% now "Y-m-d" %}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Вход -->
+    <url>
+        <loc>http://127.0.0.1:8000/login/</loc>
+        <lastmod>{% now "Y-m-d" %}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- Заявки -->
+    <url>
+        <loc>http://127.0.0.1:8000/applications/</loc>
+        <lastmod>{% now "Y-m-d" %}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Создание заявки -->
+    <url>
+        <loc>http://127.0.0.1:8000/applications/create/</loc>
+        <lastmod>{% now "Y-m-d" %}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+</urlset>

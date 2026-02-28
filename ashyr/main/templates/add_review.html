@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзыв - Корочки.есть{% endblock %}
+{% block description %}Оставьте отзыв о пройденном курсе{% endblock %}
+{% block keywords %}отзыв, оценка, курс, обучение{% endblock %}
+
+{% block content %}
+<h2>Оставить отзыв</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Информация о курсе:</h5>
+        <p class="mb-1"><strong>Курс:</strong> {{ application.course }}</p>
+        <p class="mb-1"><strong>Дата начала:</strong> {{ application.desired_start_date|date:"d.m.Y" }}</p>
+        <p class="mb-0"><strong>Способ оплаты:</strong> {{ application.get_payment_method_display }}</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    
+    {% for field in form %}
+    <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+            <div class="text-danger small">
+                {% for error in field.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-primary">Опубликовать отзыв</button>
+    <a href="{% url 'applications' %}" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}

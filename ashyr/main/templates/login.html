@@ -1,0 +1,43 @@
+{# Наследование от базового шаблона #}
+{% extends 'base.html' %}
+
+{# Мета-теги для SEO #}
+{% block title %}Вход - Корочки.есть{% endblock %}
+{% block description %}Войдите в свой аккаунт для доступа к курсам{% endblock %}
+{% block keywords %}вход, авторизация, аккаунт{% endblock %}
+
+{% block content %}
+{# Заголовок страницы #}
+<h2>Авторизация</h2>
+
+{# Блок для отображения сообщений об ошибках #}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+{# Форма входа в систему #}
+<form method="post">
+    {# Защита от CSRF атак #}
+    {% csrf_token %}
+    
+    {# Поле для ввода логина #}
+    <div class="mb-3">
+        <label for="username" class="form-label">Логин</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    
+    {# Поле для ввода пароля #}
+    <div class="mb-3">
+        <label for="password" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    
+    {# Кнопка отправки формы #}
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>
+
+{# Ссылка на страницу регистрации #}
+<p><a href="{% url 'register' %}">Еще не зарегистрированы? Регистрация</a></p>
+{% endblock %}

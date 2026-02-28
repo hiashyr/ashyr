@@ -1,0 +1,22 @@
+{# Наследование от базового шаблона #}
+{% extends 'base.html' %}
+
+{# Мета-теги для SEO #}
+{% block title %}Подача заявки - Корочки.есть{% endblock %}
+{% block description %}Подайте заявку на онлайн курс обучения{% endblock %}
+{% block keywords %}заявка, курс, обучение, подать{% endblock %}
+
+{% block content %}
+{# Заголовок страницы #}
+<h2>Подача заявки</h2>
+
+{# Форма для создания заявки #}
+<form method="post">
+    {# Защита от CSRF атак #}
+    {% csrf_token %}
+    {# Автоматическое отображение всех полей формы #}
+    {{ form.as_p }}
+    {# Кнопка отправки формы #}
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+{% endblock %}
