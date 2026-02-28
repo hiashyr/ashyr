@@ -48,40 +48,110 @@
 <script>
 // Функция для применения маски телефона
 function applyPhoneMask(inputElement, format) {
+    // Предотвращаем ввод недопустимых символов
+    inputElement.addEventListener('keydown', function(e) {
+        // Разрешаем: цифры, Backspace, Delete, Tab, Enter, Escape, Arrow keys
+        const allowedKeys = [
+            'Backspace', 'Delete', 'Tab', 'Enter', 'Escape', 
+            'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+            'Home', 'End', 'Insert'
+        ];
+        
+        // Разрешаем цифры (0-9 и numpad)
+        const isDigit = (e.key >= '0' && e.key <= '9') || 
+                       (e.key >= '0' && e.key <= '9') ||
+                       e.key === '0' || e.key === '1' || e.key === '2' || 
+                       e.key === '3' || e.key === '4' || e.key === '5' || 
+                       e.key === '6' || e.key === '7' || e.key === '8' || e.key === '9';
+        
+        // Разрешаем плюс только для формата +7
+        const isPlus = e.key === '+' && format === '+7';
+        
+        // Разрешаем Backspace и Delete для редактирования
+        const isEditKey = allowedKeys.includes(e.key);
+        
+        // Если нажата недопустимая клавиша, предотвращаем ввод
+        if (!isDigit && !isPlus && !isEditKey) {
+            e.preventDefault();
+        }
+    });
+    
+    // Форматируем ввод при изменении
     inputElement.addEventListener('input', function(e) {
         let value = e.target.value;
-        
-        // Для формата +7 разрешаем + в начале, для формата 8 удаляем все нецифровые символы
         let digits;
+        
+        // Валидация ввода: оставляем только разрешенные символы
         if (format === '+7') {
-            // Сохраняем + в начале, удаляем остальные нецифровые символы
+            // Для +7: оставляем только цифры и + в начале
             digits = value.replace(/[^0-9+]/g, '');
-            // Убедимся, что + только в начале
+            // Убедимся, что + только в начале и не дублируется
             if (digits.includes('+')) {
                 digits = '+' + digits.replace(/\+/g, '');
             }
         } else {
-            // Для формата 8 удаляем все нецифровые символы
+            // Для 8: оставляем только цифры
             digits = value.replace(/\D/g, '');
         }
         
-        // Продолжаем обработку маски
-        let x = digits.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-
+        // Форматируем ввод в зависимости от выбранного формата
         if (format === '8') {
             // Формат 8(XXX)XXX-XX-XX
-            e.target.value = !x[2] ? x[1] : x[1] + '(' + x[2] + (x[3] ? ')' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+            if (digits.length === 0) {
+                e.target.value = '';
+            } else if (digits.length === 1) {
+                e.target.value = digits;
+            } else if (digits.length <= 4) {
+                e.target.value = '8(' + digits.substring(1);
+            } else if (digits.length <= 7) {
+                e.target.value = '8(' + digits.substring(1, 4) + ')' + digits.substring(4);
+            } else if (digits.length <= 9) {
+                e.target.value = '8(' + digits.substring(1, 4) + ')' + digits.substring(4, 7) + '-' + digits.substring(7);
+            } else {
+                e.target.value = '8(' + digits.substring(1, 4) + ')' + digits.substring(4, 7) + '-' + digits.substring(7, 9) + '-' + digits.substring(9, 11);
+            }
         } else {
-            // Формат +7 (XXX) XXX-XX-XX
-            e.target.value = !x[2] ? (x[1] ? '+' + x[1] : '') :
-                           '+' + x[1] + ' (' + x[2] + (x[3] ? ') ' + x[3] : '') +
-                           (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+            // Формат +7 (XXX) XXX-XX-XX-X - пользователь вводит +7 самостоятельно, +1 цифра
+            if (digits.length === 0) {
+                e.target.value = '';
+            } else if (digits.length === 1 && digits === '+') {
+                e.target.value = '+';
+            } else if (digits.length === 2) {
+                e.target.value = '+' + digits.substring(1);
+            } else if (digits.length <= 4) {
+                e.target.value = '+' + digits.substring(1);
+            } else if (digits.length <= 7) {
+                e.target.value = '+' + digits.substring(1, 4) + ' (' + digits.substring(4, 7);
+            } else if (digits.length <= 9) {
+                e.target.value = '+' + digits.substring(1, 4) + ' (' + digits.substring(4, 7) + ') ' + digits.substring(7);
+            } else if (digits.length <= 11) {
+                e.target.value = '+' + digits.substring(1, 4) + ' (' + digits.substring(4, 7) + ') ' + digits.substring(7, 9) + '-' + digits.substring(9);
+            } else if (digits.length <= 12) {
+                // Для номера с одной дополнительной цифрой: +7 XXX XXX-XX-XX-X
+                const areaCode = digits.substring(1, 4);
+                const firstPart = digits.substring(4, 7);
+                const secondPart = digits.substring(7, 9);
+                const thirdPart = digits.substring(9, 11);
+                const fourthPart = digits.substring(11, 12);
+                
+                e.target.value = '+' + areaCode + ' (' + firstPart + ') ' + secondPart + '-' + thirdPart + '-' + fourthPart;
+            } else {
+                // Для полного номера с дополнительной цифрой: +7 XXX XXX-XX-XX-X
+                const areaCode = digits.substring(1, 4);
+                const firstPart = digits.substring(4, 7);
+                const secondPart = digits.substring(7, 9);
+                const thirdPart = digits.substring(9, 11);
+                const fourthPart = digits.substring(11, 12);
+                const fifthPart = digits.substring(12);
+                
+                e.target.value = '+' + areaCode + ' (' + firstPart + ') ' + secondPart + '-' + thirdPart + '-' + fourthPart + '-' + fifthPart;
+            }
         }
     });
 }
 
 // Применяем маску для телефона (по умолчанию формат '8')
 const phoneInput = document.getElementById('phone-input');
-applyPhoneMask(phoneInput, '8'); ###################################################################################################
+applyPhoneMask(phoneInput, '+7');
 </script>
 {% endblock %}

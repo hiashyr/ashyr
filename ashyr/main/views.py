@@ -18,10 +18,10 @@ def register(request):
     if request.method == 'POST':
         # Создание формы с данными из POST запроса
         # По умолчанию подтверждение пароля не требуется, формат телефона '8'
-        form = CustomUserRegistrationForm(
+        form = CustomUserRegistrationForm( ######################################################
             request.POST,
             require_password_confirmation=False,
-            phone_mask_format='8'
+            phone_mask_format='+7'
         )
         if form.is_valid():
             # Сохранение пользователя и автоматический вход
@@ -31,10 +31,10 @@ def register(request):
             return redirect('applications')
     else:
         # Создание пустой формы для GET запроса
-        # По умолчанию подтверждение пароля не требуется, формат телефона '8'######################################################
-        form = CustomUserRegistrationForm(
+        # По умолчанию подтверждение паролfя не требуется, формат телефона '8'
+        form = CustomUserRegistrationForm( ######################################################
             require_password_confirmation=False,
-            phone_mask_format='8'
+            phone_mask_format='+7'
         )
 
     return render(request, 'register.html', {'form': form})

@@ -84,8 +84,9 @@ class CustomUserRegistrationForm(forms.ModelForm):
             if not re.match(r'^8\(\d{3}\)\d{3}-\d{2}-\d{2}$', phone):
                 raise forms.ValidationError('Телефон должен быть в формате: 8(XXX)XXX-XX-XX')
         else:
-            if not re.match(r'^\+\d \(\d{3}\) \d{3}-\d{2}-\d{2}$', phone):
-                raise forms.ValidationError('Телефон должен быть в формате: +7 (XXX) XXX-XX-XX')
+            # Разрешаем как стандартный формат +7 (XXX) XXX-XX-XX, так и с дополнительной цифрой +7 (XXX) XXX-XX-XX-X
+            if not re.match(r'^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}(-\d)?$|^+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$', phone):
+                raise forms.ValidationError('Телефон должен быть в формате: +7 (XXX) XXX-XX-XX или +7 (XXX) XXX-XX-XX-X')
 
         # Проверка уникальности телефона
         if CustomUser.objects.filter(phone=phone).exists():
@@ -144,7 +145,7 @@ class CustomUserRegistrationForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'id': 'phone-input',
-                'inputmode': 'text'
+                'inputmode': 'numeric'
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
